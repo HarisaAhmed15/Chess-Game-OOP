@@ -95,6 +95,13 @@ bool Rook::isValidMove(int toRow,
 
     return true;
 }
+Queen::Queen(char c, int r, int cl) : Piece(c, r, cl) {}
+char Queen::getSymbol() const { return (color == 'W') ? 'Q' : 'q'; }
+bool Queen::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
+    Rook tempRook(color, row, col);
+    Bishop tempBishop(color, row, col);
+    return tempRook.isValidMove(toRow, toCol, board) || tempBishop.isValidMove(toRow, toCol, board);
+}
 
 Board::Board() : currentTurn('W') {
 
