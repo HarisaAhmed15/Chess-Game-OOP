@@ -116,28 +116,35 @@ bool King::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
     if (board[toRow][toCol] != nullptr && board[toRow][toCol]->getColor() == color) return false;
     return true;
 }
-Board::Board() : currentTurn('W') {
-
+Board::Board() : currentTurn('W'), whiteKingAlive(true), blackKingAlive(true) {
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
             grid[i][j] = nullptr;
-
     initialize();
 }
 
 Board::~Board() {
-
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
-            delete grid[i][j];
+            if (grid[i][j] != nullptr) { delete grid[i][j]; grid[i][j] = nullptr; }
 }
 
 void Board::initialize() {
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++)
+            if (grid[i][j]) { delete grid[i][j]; grid[i][j] = nullptr; }
 
-    for (int j = 0; j < 8; j++) {
-        grid[1][j] = new Pawn('B', 1, j);
-        grid[6][j] = new Pawn('W', 6, j);
-    }
+    grid[0][0] = new Rook('B', 0, 0);   grid[0][7] = new Rook('B', 0, 7);
+    grid[0][1] = new Knight('B', 0, 1); grid[0][6] = new Knight('B', 0, 6);
+    grid[0][2] = new Bishop('B', 0, 2); grid[0][5] = new Bishop('B', 0, 5);
+    grid[0][3] = new Queen('B', 0, 3);  grid[0][4] = new King('B', 0, 4);
+    for (int j = 0; j < 8; j++) grid[1][j] = new Pawn('B', 1, j);
+
+    grid[7][0] = new Rook('W', 7, 0);   grid[7][7] = new Rook('W', 7, 7);
+    grid[7][1] = new Knight('W', 7, 1); grid[7][6] = new Knight('W', 7, 6);
+    grid[7][2] = new Bishop('W', 7, 2); grid[7][5] = new Bishop('W', 7, 5);
+    grid[7][3] = new Queen('W', 7, 3);  grid[7][4] = new King('W', 7, 4);
+    for (int j = 0; j < 8; j++) grid[6][j] = new Pawn('W', 6, j);
 }
 
 void Board::display() const {
@@ -155,23 +162,43 @@ void Board::display() const {
     cout << "    a  b  c  d  e  f  g  h\n\n";
 }
 
-bool Board::movePiece(int fromRow, int fromCol,
-    int toRow, int toCol) {
+bool Board::isInBounds(int r, int c) const {
+    return r >= 0 && r < 8 && c >= 0 && c < 8;
+}
 
+bool Board::movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+    if (!isInBounds(fromRow, fromCol) || !isInBounds(toRow, toCol)) return false;
+    Piece* piece = grid[fromRow][fromCol];
+    if (piece == nullptr) return false;
+    if (piece->getColor() != currentTurn) return false;
+    if (!piece->isValidMove(toRow, toCol, grid)) return false;
+
+    if (grid[toRow][toCol] != nullptr) {
+        char sym = grid[toRow][toCol]->getSymbol();
+        if (sym == 'K') whiteKingAlive = false;
+        if (sym == 'k') blackKingAlive = false;
+        delete grid[toRow][toCol];
+    }
+
+    grid[toRow][toCol] = piece;
+    grid[fromRow][fromCol] = nullptr;
+    piece->setPosition(toRow, toCol);
+    switchTurn();
     return true;
 }
 
-char Board::getCurrentTurn() const {
-    return currentTurn;
+bool Board::isGameOver() const {
+    return !whiteKingAlive || !blackKingAlive;
 }
+
+char Board::getWinner() const {
+    if (!whiteKingAlive) return 'B';
+    if (!blackKingAlive) return 'W';
+    return ' ';
+}
+
+char Board::getCurrentTurn() const { return currentTurn; }
 
 void Board::switchTurn() {
-
     currentTurn = (currentTurn == 'W') ? 'B' : 'W';
-}
-
-bool Board::isInBounds(int r, int c) const {
-
-    return r >= 0 && r < 8 &&
-        c >= 0 && c < 8;
 }
