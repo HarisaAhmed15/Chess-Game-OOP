@@ -135,21 +135,18 @@ void Board::initialize() {
 }
 
 void Board::display() const {
-
-    cout << "\nChess Board\n";
-
+    cout << "\n    a  b  c  d  e  f  g  h\n";
+    cout << "   ------------------------\n";
     for (int i = 0; i < 8; i++) {
-
+        cout << (8 - i) << " | ";
         for (int j = 0; j < 8; j++) {
-
-            if (grid[i][j] == nullptr)
-                cout << ". ";
-            else
-                cout << grid[i][j]->getSymbol() << " ";
+            if (grid[i][j] == nullptr) cout << ".  ";
+            else cout << grid[i][j]->getSymbol() << "  ";
         }
-
-        cout << endl;
+        cout << "| " << (8 - i) << "\n";
     }
+    cout << "   ------------------------\n";
+    cout << "    a  b  c  d  e  f  g  h\n\n";
 }
 
 bool Board::movePiece(int fromRow, int fromCol,
