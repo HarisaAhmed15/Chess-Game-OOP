@@ -55,6 +55,29 @@ bool Pawn::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
 
     return false;
 }
+Knight::Knight(char c, int r, int cl) : Piece(c, r, cl) {}
+char Knight::getSymbol() const { return (color == 'W') ? 'N' : 'n'; }
+bool Knight::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
+    int dr = abs(toRow - row), dc = abs(toCol - col);
+    if (!((dr == 2 && dc == 1) || (dr == 1 && dc == 2))) return false;
+    if (board[toRow][toCol] != nullptr && board[toRow][toCol]->getColor() == color) return false;
+    return true;
+}
+
+Bishop::Bishop(char c, int r, int cl) : Piece(c, r, cl) {}
+char Bishop::getSymbol() const { return (color == 'W') ? 'B' : 'b'; }
+bool Bishop::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
+    if (abs(toRow - row) != abs(toCol - col)) return false;
+    int rStep = (toRow > row) ? 1 : -1;
+    int cStep = (toCol > col) ? 1 : -1;
+    int r = row + rStep, c = col + cStep;
+    while (r != toRow && c != toCol) {
+        if (board[r][c] != nullptr) return false;
+        r += rStep; c += cStep;
+    }
+    if (board[toRow][toCol] != nullptr && board[toRow][toCol]->getColor() == color) return false;
+    return true;
+}
 Rook::Rook(char c, int r, int cl)
     : Piece(c, r, cl) {
 }
