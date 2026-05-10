@@ -30,7 +30,30 @@ char Pawn::getSymbol() const {
 }
 
 bool Pawn::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
-    return true;
+
+    int dir = (color == 'W') ? -1 : 1;
+    int startRow = (color == 'W') ? 6 : 1;
+
+    if (toCol == col && board[toRow][toCol] == nullptr) {
+
+        if (toRow == row + dir)
+            return true;
+
+        if (row == startRow &&
+            toRow == row + 2 * dir &&
+            board[row + dir][col] == nullptr)
+            return true;
+    }
+
+    if (abs(toCol - col) == 1 &&
+        toRow == row + dir) {
+
+        if (board[toRow][toCol] != nullptr &&
+            board[toRow][toCol]->getColor() != color)
+            return true;
+    }
+
+    return false;
 }
 
 Board::Board() : currentTurn('W') {
