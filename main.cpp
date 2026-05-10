@@ -1,9 +1,15 @@
 #include "chess.h"
+int colCharToIndex(char c) {
+    return c - 'a';
+}
 
+int rowCharToIndex(char c) {
+    return 8 - (c - '0');
+}
 int main() {
 
     Board board;
-
+    string input;
     cout << "=============================\n";
     cout << "     CONSOLE CHESS GAME      \n";
     cout << "=============================\n";
@@ -30,7 +36,49 @@ int main() {
     cout << "-----------------------------\n";
     cout << "\nPress ENTER to start...";
 
+    cin.ignore();
+    cin.get();
+    while (!board.isGameOver()) {
+        board.display();
+
+        if (board.getCurrentTurn() == 'W')
+            cout << "White's Turn: ";
+        else
+            cout << "Black's Turn: ";
+
+        string from, to;
+        cin >> from;
+
+        if (from == "quit") {
+            cout << "Game exited.\n";
+            return 0;
+        }
+
+        cin >> to;
+
+        if (from.length() != 2 || to.length() != 2) {
+            cout << "Invalid input format.\n";
+            continue;
+        }
+
+        int fromCol = colCharToIndex(from[0]);
+        int fromRow = rowCharToIndex(from[1]);
+        int toCol = colCharToIndex(to[0]);
+        int toRow = rowCharToIndex(to[1]);
+
+        if (!board.movePiece(fromRow, fromCol, toRow, toCol)) {
+            cout << "Invalid move. Try again.\n";
+        }
+    }
+
     board.display();
+    cout << "=============================\n";
+    char winner = board.getWinner();
+    if (winner == 'W')
+        cout << "  White Wins!\n";
+    else
+        cout << "  Black Wins!\n";
+    cout << "=============================\n";
 
     return 0;
 }
