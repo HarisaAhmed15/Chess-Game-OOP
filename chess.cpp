@@ -86,13 +86,19 @@ char Rook::getSymbol() const {
     return (color == 'W') ? 'R' : 'r';
 }
 
-bool Rook::isValidMove(int toRow,
-    int toCol,
-    Piece* board[8][8]) const {
-
-    if (toRow != row && toCol != col)
-        return false;
-
+bool Rook::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
+    if (toRow != row && toCol != col) return false;
+    if (toRow == row) {
+        int step = (toCol > col) ? 1 : -1;
+        for (int c = col + step; c != toCol; c += step)
+            if (board[row][c] != nullptr) return false;
+    }
+    else {
+        int step = (toRow > row) ? 1 : -1;
+        for (int r = row + step; r != toRow; r += step)
+            if (board[r][col] != nullptr) return false;
+    }
+    if (board[toRow][toCol] != nullptr && board[toRow][toCol]->getColor() == color) return false;
     return true;
 }
 Queen::Queen(char c, int r, int cl) : Piece(c, r, cl) {}
