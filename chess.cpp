@@ -103,6 +103,13 @@ bool Queen::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
     return tempRook.isValidMove(toRow, toCol, board) || tempBishop.isValidMove(toRow, toCol, board);
 }
 
+King::King(char c, int r, int cl) : Piece(c, r, cl) {}
+char King::getSymbol() const { return (color == 'W') ? 'K' : 'k'; }
+bool King::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
+    if (abs(toRow - row) > 1 || abs(toCol - col) > 1) return false;
+    if (board[toRow][toCol] != nullptr && board[toRow][toCol]->getColor() == color) return false;
+    return true;
+}
 Board::Board() : currentTurn('W') {
 
     for (int i = 0; i < 8; i++)
