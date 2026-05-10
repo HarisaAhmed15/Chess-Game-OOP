@@ -55,6 +55,23 @@ bool Pawn::isValidMove(int toRow, int toCol, Piece* board[8][8]) const {
 
     return false;
 }
+Rook::Rook(char c, int r, int cl)
+    : Piece(c, r, cl) {
+}
+
+char Rook::getSymbol() const {
+    return (color == 'W') ? 'R' : 'r';
+}
+
+bool Rook::isValidMove(int toRow,
+    int toCol,
+    Piece* board[8][8]) const {
+
+    if (toRow != row && toCol != col)
+        return false;
+
+    return true;
+}
 
 Board::Board() : currentTurn('W') {
 

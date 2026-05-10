@@ -24,6 +24,16 @@ public:
     bool isValidMove(int toRow, int toCol, Piece* board[8][8]) const override;
     char getSymbol() const override;
 };
+class Rook : public Piece {
+public:
+    Rook(char c, int r, int cl);
+
+    bool isValidMove(int toRow,
+        int toCol,
+        Piece* board[8][8]) const override;
+
+    char getSymbol() const override;
+};
 
 class Board {
 private:
